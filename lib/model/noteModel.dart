@@ -26,7 +26,7 @@ class Notemodel {
   final DateTime createTime;
 
   Notemodel(
-      { this.id,
+      {this.id,
       required this.isImportant,
       required this.number,
       required this.title,
@@ -51,7 +51,7 @@ class Notemodel {
 
   static Notemodel fromJson(Map<String, Object?> json) => Notemodel(
         id: json[NoteField.id] as int?,
-        isImportant: json[NoteField.isImportant] as bool,
+        isImportant: json[NoteField.isImportant] == 1,
         number: json[NoteField.number] as int,
         title: json[NoteField.title] as String,
         description: json[NoteField.description] as String,

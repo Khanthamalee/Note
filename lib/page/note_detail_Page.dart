@@ -24,7 +24,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
 
   Future refreshNote() async {
     setState(() => isLoading = true);
-    this.note = await NotesDatabase.instance.readNote(widget.noteId);
+    note = await NotesDatabase.instance.readNote(widget.noteId);
     setState(() => isLoading = false);
   }
 

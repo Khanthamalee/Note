@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:note/db/notes_database.dart';
 import 'package:note/model/noteModel.dart';
+import 'package:note/page/note_add_edit_page.dart';
 import 'package:note/page/note_detail_Page.dart';
 
 class NotesPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _NotesPageState extends State<NotesPage> {
   @override
   void initState() {
     super.initState();
+    refreshNote();
   }
 
   @override
@@ -28,7 +30,9 @@ class _NotesPageState extends State<NotesPage> {
 
   Future refreshNote() async {
     setState(() => isLoading = true);
-    this.notes = await NotesDatabase.instance.readAllNotes();
+    notes = await NotesDatabase.instance.readAllNotes();
+    print("notes");
+    print(notes);
     setState(() => isLoading = false);
   }
 
@@ -57,9 +61,9 @@ class _NotesPageState extends State<NotesPage> {
                   : buildNotes()),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // await Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => AddEditPage()));
-          // refreshNote();
+          await Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => NoteAddEditPage()));
+          refreshNote();
         },
         backgroundColor: Colors.black,
         child: Icon(Icons.add),
@@ -91,23 +95,57 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   Widget _noteCard(Notemodel note, int index) {
-    return SizedBox(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            DateFormat.yMMMd().format(note.createTime),
-            style: TextStyle(color: Colors.white38),
-          ),
-          Text(
-            note.title,
-            style: TextStyle(
-                color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-        ],
+    final _lightColors = [
+      Colors.amber.shade300,
+      Colors.lightGreen.shade300,
+      Colors.lightBlue.shade300,
+      Colors.orange.shade300,
+      Colors.pinkAccent.shade100,
+      Colors.tealAccent.shade100
+    ];
+    final color = _lightColors[index % _lightColors.length];
+    final time = DateFormat.yMMMd().format(note.createTime);
+    final minHeight = getMinHeight(index);
+    return Card(
+      color: color,
+      child: Container(
+        constraints: BoxConstraints(minHeight: minHeight),
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              time,
+              style: TextStyle(color: Colors.grey.shade700),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              note.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  double getMinHeight(int index) {
+    switch (index % 4) {
+      case 0:
+        return 100;
+      case 1:
+        return 150;
+      case 2:
+        return 150;
+      case 3:
+        return 100;
+      default:
+        return 100;
+    }
   }
 }
